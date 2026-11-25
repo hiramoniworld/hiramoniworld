@@ -1,0 +1,1242 @@
+# MASTER PROMPT — HIRA
+## A Universe Made Just for You
+
+You are acting as a senior full-stack software engineer, UI/UX designer, product architect, Firebase security engineer, and creative experience designer.
+
+Your task is to design and build a complete, immersive, private, personalized digital universe called **HIRA**.
+
+This is not an ordinary website, a generic portfolio, a public social platform, or a standard romantic landing page.
+
+It is a private digital world created exclusively for one person named **Hira**.
+
+The entire experience should feel thoughtfully designed around Hira: her name, personal interests, memories, questions, discoveries, stories, letters, and private space.
+
+Build a real, functional application with a secure backend. Do not create only a visual mockup or a static demonstration.
+
+---
+
+# PART 1 — CORE IDENTITY AND PURPOSE
+
+## 1.1 Official Website Name
+
+The official website name must be:
+
+# HIRA
+
+Primary tagline:
+
+**A Universe Made Just for You.**
+
+Optional secondary phrase:
+
+**Somewhere, Between Us.**
+
+The word HIRA must be the central identity of the entire experience.
+
+Do not use any other name as the website's official brand.
+
+The website is exclusively intended for Hira. There will be only two authorized accounts:
+
+1. Hira — the private user.
+2. Admin — the content manager and creator.
+
+The public-facing website must never reveal the admin's personal name, email address, or personal identity.
+
+Where the interface needs to identify the administrator, use neutral labels such as "Admin" or "The Creator".
+
+There must be no public registration, public profiles, public member directory, or public access to personal content.
+
+## 1.2 Primary Objective
+
+When Hira opens the website, she should naturally understand:
+
+- This website was designed specifically for her.
+- The sections and experiences have been carefully selected for her.
+- Some content contains personal memories and meaningful references.
+- There are things she can discover gradually.
+- She has a private space that belongs to her.
+- She is free to explore, respond, write, or simply enjoy the experience without any obligation.
+
+Do not just place the name "Hira" on a generic template.
+
+Make personalization part of the actual product experience.
+
+Use ethical personalization principles such as recognition, relevance, discovery, ownership, comfort, and authenticity.
+
+Never use guilt, emotional pressure, psychological manipulation, forced engagement, artificial urgency, or emotional dependency techniques.
+
+Never invent personal memories, conversations, promises, feelings, or experiences.
+
+Only use personal information and memories that the admin explicitly adds.
+
+---
+
+# PART 2 — VISUAL DIRECTION AND EXPERIENCE
+
+## 2.1 Overall Design
+
+Create a beautiful, cinematic, immersive cosmic universe.
+
+The visual atmosphere should combine:
+
+- Deep-space black.
+- Midnight navy.
+- Subtle moonlight blue.
+- Lavender.
+- Soft violet.
+- Elegant gold accents.
+- Stars and distant galaxies.
+- Constellations and planets.
+- Nebula-like gradients.
+- Floating particles.
+- Atmospheric lighting.
+- Beautiful transitions and subtle motion.
+
+The design should feel mysterious, intelligent, peaceful, elegant, and emotionally meaningful.
+
+Do not make it childish or overly romantic.
+
+Avoid generic heart icons, excessive pink colors, ordinary love templates, excessive emojis, and cheap-looking animations.
+
+Use modern, elegant typography with excellent readability.
+
+Use a consistent visual design system across every page.
+
+## 2.2 Landing Page
+
+Create a cinematic landing page that introduces the HIRA universe.
+
+The first screen should feel memorable.
+
+Main title:
+
+**HIRA**
+
+Subtitle:
+
+**A Universe Made Just for You.**
+
+Suggested welcome message:
+
+"Welcome, Hira.
+This little universe was made just for you.
+Every corner has something waiting to be discovered."
+
+Suggested Bengali version:
+
+"স্বাগতম, হীরা।
+এই ছোট্ট মহাবিশ্বটা শুধু তোর জন্য সাজানো।
+এখানে প্রতিটি কোণে তোর জন্য কিছু না কিছু অপেক্ষা করছে।"
+
+The admin must be able to edit the welcome text.
+
+Landing page requirements:
+
+- Beautiful animated star field.
+- A central glowing HIRA identity.
+- A subtle cinematic entrance animation.
+- An elegant "Begin Exploring" button.
+- A visual gateway into the universe.
+- Responsive design for mobile and desktop.
+- A simple and intuitive navigation system.
+
+Do not make the user wait through long loading animations.
+
+Provide a reduced-motion experience for users who prefer less animation.
+
+## 2.3 Personalization
+
+Throughout the website, use Hira's name naturally.
+
+Examples:
+
+- Welcome back, Hira.
+- A little discovery for you.
+- Something waiting in your universe.
+- Your memories.
+- Your private space.
+- A question for today.
+
+Do not repeat her name in every sentence.
+
+Personalization should feel natural, thoughtful, and authentic.
+
+The admin must be able to create genuinely personal content, including memories, messages, letters, questions, and discoveries.
+
+The website must never pretend that automatically generated or system-generated messages are personally written by someone.
+
+---
+
+# PART 3 — MAIN WEBSITE SECTIONS
+
+Build all the following sections as real, functional features.
+
+Each section should have its own visual identity while remaining consistent with the main cosmic theme.
+
+## 3.1 MEMORY GALAXY
+
+Create an interactive galaxy containing personal memories.
+
+Concept:
+
+Each memory appears as a star, planet, or celestial object.
+
+When Hira selects a star, a memory opens.
+
+Memory content may include:
+
+- Memory title.
+- Date.
+- Written story.
+- Photographs.
+- Multiple images.
+- Optional audio.
+- Optional video.
+- Short notes.
+- Related memories.
+
+Features:
+
+- Interactive star-map layout.
+- Beautiful memory detail view.
+- Search and filters.
+- Timeline organization.
+- Image gallery.
+- Favorite or saved memories.
+- Responsive mobile layout.
+
+Admin can create, edit, publish, unpublish, schedule, and delete memories.
+
+Do not automatically invent or pre-populate personal memories.
+
+If there are no memories yet, show an elegant empty state rather than fake sample memories.
+
+## 3.2 DAILY DISCOVERY
+
+Create a daily content experience.
+
+Each day, Hira can discover something new.
+
+Possible content types:
+
+- A thoughtful question.
+- A scientific fact.
+- An interesting image.
+- A philosophical thought.
+- A short personal message.
+- An audio recording.
+- A surprising discovery.
+- A clue.
+- A chapter from an unfinished story.
+- A small mystery to explore.
+
+Requirements:
+
+- Daily content organized by date.
+- A calendar or discovery history.
+- Today's discovery highlighted.
+- Previous discoveries accessible.
+- Optional images and audio.
+- Scheduled publishing.
+- Draft and published states.
+- Optional hidden discoveries.
+
+Time zone:
+
+**Asia/Dhaka (Bangladesh Standard Time).**
+
+The admin must be able to schedule content using Bangladesh local time.
+
+Convert scheduled dates correctly when storing and comparing timestamps.
+
+Do not automatically generate fake personal messages.
+
+All daily content should be written, selected, or approved by the admin before publication.
+
+If no discovery is scheduled for a day, display a graceful empty state.
+
+## 3.3 QUESTION ROOM
+
+Create an interactive room containing interesting questions.
+
+Question categories may include:
+
+- Life.
+- Love.
+- Human nature.
+- Memories.
+- Dreams.
+- Consciousness.
+- Psychology.
+- Science.
+- Space.
+- Time.
+- Philosophy.
+- Personal reflection.
+- Future.
+
+Example questions:
+
+"What does being understood truly mean?"
+
+"Can a memory change the way we experience the present?"
+
+"Is silence sometimes a better answer than words?"
+
+"Do we discover who we are, or do we create ourselves?"
+
+Features:
+
+- Question cards.
+- Category filters.
+- Daily question option.
+- Optional written responses.
+- Edit and delete personal responses.
+- Save questions for later.
+- Question history.
+
+Hira's personal answers must be private to her unless she explicitly chooses to share a particular answer.
+
+The admin can manage the questions but must not read her private answers.
+
+Do not turn the questions into psychological tests, diagnoses, or personality assessments.
+
+## 3.4 LETTER ARCHIVE
+
+Create a beautiful digital letter archive.
+
+Use elegant envelopes, paper textures, subtle glowing effects, and readable typography.
+
+Possible categories:
+
+- For a lonely day.
+- Before sleep.
+- For a happy moment.
+- When life feels confusing.
+- Birthday.
+- For the future.
+- Unopened letters.
+- Special letters.
+
+Features:
+
+- Letter title.
+- Letter content.
+- Optional images.
+- Optional audio.
+- Creation date.
+- Scheduled opening date.
+- Category.
+- Draft, published, and scheduled states.
+- Unread and read status where appropriate.
+
+The admin can write and schedule letters.
+
+Hira can open letters when they become available.
+
+Never create fake letters or pretend a letter was written on a date when it was not.
+
+## 3.5 TIME MACHINE
+
+Create a visual timeline divided into:
+
+- Past.
+- Present.
+- Future.
+
+Show dates as points on a timeline.
+
+Possible content:
+
+- Personal milestones.
+- Memories.
+- Special dates.
+- Important moments.
+- Future letters.
+- Time capsules.
+- Personal reflections.
+
+Add an editable recurring calendar marker for Hira's birthday:
+
+**October 13**
+
+Do not invent a birthday year or any additional personal event details.
+
+The admin must be able to manage all timeline entries.
+
+Create a beautiful interactive timeline with smooth navigation.
+
+## 3.6 HIDDEN UNIVERSE
+
+Create a section containing hidden discoveries and Easter eggs.
+
+Possible features:
+
+- Secret stars.
+- Hidden messages.
+- Locked chapters.
+- Special visual sequences.
+- Hidden images.
+- Secret pages.
+- Discoverable clues.
+- Optional password-protected content.
+- Unlockable discoveries.
+
+The admin controls all hidden content and unlock conditions.
+
+Hira should be able to discover these naturally without being forced to engage.
+
+Do not use fake security warnings, fake system errors, or deceptive messages.
+
+## 3.7 SOUND OF MEMORIES
+
+Create a dedicated audio experience.
+
+Features:
+
+- Upload audio recordings.
+- Audio player.
+- Play, pause, seek, and volume controls.
+- Audio titles and descriptions.
+- Optional associated memory.
+- Audio categories.
+- Duration display.
+- Admin-controlled publication.
+
+Do not autoplay audio.
+
+Respect browser autoplay restrictions and user choice.
+
+Provide accessible audio controls.
+
+## 3.8 THE MIRROR — PRIVATE JOURNAL
+
+This section is especially important.
+
+Create a genuinely private digital journal belonging to Hira.
+
+It should feel like a calm, beautiful personal room.
+
+Features:
+
+- Write a private journal entry.
+- Edit entries.
+- Delete entries.
+- View entries by date.
+- Search personal entries.
+- Save drafts.
+- Private journal lock.
+- Elegant, distraction-free writing interface.
+- Mobile-friendly editor.
+
+### Absolute Privacy Requirement
+
+The admin must not be able to read Hira's private journal entries.
+
+Do not show journal contents in the admin dashboard.
+
+Do not create an admin API that retrieves journal contents.
+
+Do not include journal text in server logs, analytics, error reports, or notifications.
+
+### Implement Strong Privacy Protection
+
+Use client-side encryption for journal content.
+
+Recommended approach:
+
+- Use the browser Web Crypto API.
+- Derive an encryption key from a separate journal passphrase provided by Hira.
+- Use PBKDF2 with SHA-256 and a strong iteration count to derive an AES-256-GCM key.
+- Generate a fresh random initialization vector for each encrypted entry.
+- Encrypt journal titles and text before saving them to Firestore.
+- Never send the journal passphrase or derived encryption key to the server.
+- Never store the journal passphrase in Firestore, Firebase Storage, localStorage, or server environment variables.
+- Store only encrypted content and the minimum required metadata.
+- Clear the in-memory encryption key when the journal is locked or the user leaves the journal.
+
+Explain clearly that forgetting the journal passphrase may make encrypted entries unrecoverable.
+
+Keep private journal security separate from the admin content-management system.
+
+Use Firebase security rules so only Hira's authenticated account can access her journal records.
+
+The admin must not be able to access journal entries through the UI or normal application APIs.
+
+Do not weaken these requirements for convenience.
+
+## 3.9 UNFINISHED STORY
+
+Create a chapter-based storytelling section.
+
+Features:
+
+- Story title.
+- Chapter list.
+- Individual chapter pages.
+- Cover image.
+- Optional illustrations.
+- Publication date.
+- Draft and scheduled chapters.
+- Reading progress.
+- Previous and next chapter navigation.
+
+The admin writes and manages the story.
+
+Hira can read available chapters.
+
+The design should feel like an elegant digital book or mysterious story archive.
+
+Do not generate personal story events and present them as true memories.
+
+## 3.10 SCIENCE LABORATORY
+
+Create an educational discovery section.
+
+Possible topics:
+
+- Space and cosmology.
+- Black holes.
+- Time.
+- Multiverse hypotheses.
+- The Fermi paradox.
+- The Great Filter.
+- Consciousness.
+- Dreams.
+- Memory.
+- Neuroscience.
+- Psychology.
+- Artificial intelligence.
+- Human perception.
+- Scientific mysteries.
+- Physics.
+- The nature of reality.
+
+Design it as a beautiful digital laboratory or research archive.
+
+Features:
+
+- Scientific article cards.
+- Topic categories.
+- Images and diagrams.
+- Explanations.
+- Related discoveries.
+- Reading history.
+- References and source links.
+- Author notes.
+
+### Scientific Accuracy Requirements
+
+Clearly distinguish:
+
+1. Established scientific facts.
+2. Scientific theories.
+3. Hypotheses.
+4. Speculative ideas.
+5. Philosophical questions.
+
+Never present speculation as proven science.
+
+Never invent research papers, scientists, citations, statistics, or scientific findings.
+
+The admin should be able to attach source titles, publication names, authors, dates, and reliable reference URLs.
+
+Where sources are provided, display them clearly.
+
+Keep the writing intelligent, engaging, and understandable.
+
+## 3.11 PRIVATE BOT COMMUNICATION
+
+Create a private messaging area.
+
+Hira can send a message through the website.
+
+The admin can see messages sent to this communication inbox and manually respond.
+
+Requirements:
+
+- Private message inbox.
+- Message history.
+- Read/unread state.
+- Message timestamps.
+- Admin replies.
+- User-friendly chat interface.
+- Mobile-friendly layout.
+- Secure authentication.
+- Rate limiting and validation.
+
+### Important Honesty Requirement
+
+This is not an AI chatbot.
+
+Do not use AI to generate fake personal replies.
+
+Do not pretend that automated responses are written by a real person.
+
+Do not create fake typing indicators, fake online status, fake delivery receipts, or misleading activity indicators.
+
+Where appropriate, clearly explain that replies in this communication area are manually written by the admin.
+
+The admin must be able to respond manually through the admin dashboard.
+
+---
+
+# PART 4 — ADMIN PORTAL
+
+Create a complete, separate administration system.
+
+Admin route:
+
+`/admin`
+
+The admin portal should be hidden from normal website navigation but must be protected by real authentication and authorization.
+
+Do not rely on a hidden URL as the only security mechanism.
+
+## 4.1 Admin Login
+
+Create a secure admin login page.
+
+Requirements:
+
+- Email and password authentication through Firebase Authentication.
+- No public admin registration.
+- Verify the authenticated account's admin role on the server.
+- Secure logout.
+- Session and token handling.
+- Proper unauthorized-access handling.
+- Never expose admin credentials in frontend code.
+
+A normal user must never be able to enter the admin dashboard by manipulating routes or frontend state.
+
+## 4.2 Admin Dashboard
+
+Create a polished dashboard showing useful management information.
+
+Possible overview cards:
+
+- Total published memories.
+- Draft memories.
+- Scheduled discoveries.
+- Published letters.
+- Unread incoming messages.
+- Unfinished story chapters.
+- Uploaded media count.
+- Recent content activity.
+
+Do not include fake counts or demo statistics.
+
+Show actual database information.
+
+## 4.3 Admin Content Management
+
+The admin should be able to manage:
+
+1. Memories.
+2. Daily Discoveries.
+3. Questions.
+4. Letters.
+5. Time Machine entries.
+6. Hidden Universe content.
+7. Audio recordings.
+8. Unfinished Story chapters.
+9. Science Laboratory articles.
+10. User messages and manual replies.
+11. Media library.
+12. Website settings.
+
+Each content-management module should support relevant actions:
+
+- Create.
+- Edit.
+- Save draft.
+- Preview.
+- Publish.
+- Unpublish.
+- Schedule.
+- Search.
+- Filter.
+- Sort.
+- Delete with confirmation.
+
+Use reusable forms and components.
+
+Provide clear success and error messages.
+
+Warn before destructive actions.
+
+## 4.4 Daily Scheduling
+
+The admin must be able to schedule content.
+
+Requirements:
+
+- Date and time selection.
+- Asia/Dhaka time zone.
+- Scheduled publication.
+- Draft status.
+- Published status.
+- Unpublished status.
+- Editing scheduled items.
+- Cancelling scheduled publication.
+- Correct display of local dates and times.
+
+Do not silently publish content early or on the wrong day.
+
+## 4.5 Media Library
+
+Create a centralized media library.
+
+Features:
+
+- Image uploads.
+- Audio uploads.
+- Video uploads if supported.
+- File previews.
+- File names.
+- File type and size validation.
+- Upload progress.
+- Delete confirmation.
+- Reuse uploaded media across content.
+
+Use Firebase Storage securely.
+
+Do not expose private journal files in the public media library.
+
+## 4.6 Admin Settings
+
+The admin should be able to manage:
+
+- Website title and subtitle.
+- Welcome message.
+- Interface language defaults.
+- Theme settings.
+- Section visibility.
+- Daily content settings.
+- Publication schedule.
+- Content categories.
+- Media.
+- User account access settings.
+
+Do not let the admin accidentally disable the security protections.
+
+The admin dashboard must not contain Hira's private journal data or her private Question Room responses.
+
+---
+
+# PART 5 — USER EXPERIENCE FOR HIRA
+
+The ordinary user experience must remain simple.
+
+Hira should be able to:
+
+- Log in securely.
+- Open the HIRA universe.
+- Explore all published sections.
+- Read available content.
+- View memories.
+- Discover daily content.
+- Answer questions privately.
+- Read letters.
+- Explore the timeline.
+- Discover hidden content.
+- Listen to audio.
+- Write in her private journal.
+- Read story chapters.
+- Explore science content.
+- Send messages to the admin.
+- View manual replies.
+- Manage her own private responses and journal entries.
+
+Do not expose admin controls to Hira.
+
+Do not expose other users, user lists, admin information, database information, or internal system settings.
+
+Do not add unnecessary features that distract from the core experience.
+
+---
+
+# PART 6 — TECHNICAL ARCHITECTURE
+
+Build the project with a maintainable, production-oriented architecture.
+
+## 6.1 Required Technology Stack
+
+Frontend:
+
+- React.
+- TypeScript.
+- Vite.
+- React Router.
+- Modern CSS or Tailwind CSS.
+- Reusable components.
+- Responsive design.
+
+Backend and data:
+
+- Firebase Authentication.
+- Cloud Firestore.
+- Firebase Storage.
+- Firebase Admin SDK.
+- Vercel Serverless Functions for protected server-side operations.
+
+Hosting:
+
+- Vercel.
+
+Do not replace Firebase with localStorage or a fake local database.
+
+Do not use a demo backend.
+
+## 6.2 Authentication
+
+There must be only two authorized user accounts:
+
+1. Hira.
+2. Admin.
+
+Use Firebase Authentication email/password login.
+
+Do not include a public sign-up page.
+
+Accounts should be provisioned securely through Firebase Console or a secure one-time administrative provisioning script.
+
+Do not hardcode real passwords.
+
+Use environment variables and secure setup instructions for account identifiers.
+
+Support separate authorization roles using secure Firebase custom claims or an equally strong server-verified mechanism.
+
+The server must verify the Firebase ID token for protected requests.
+
+Never trust an admin role supplied by the frontend.
+
+## 6.3 Database Design
+
+Design a clean Firestore data model.
+
+Possible collections:
+
+- `users`
+- `siteSettings`
+- `memories`
+- `dailyDiscoveries`
+- `questions`
+- `privateQuestionResponses`
+- `letters`
+- `timelineEntries`
+- `hiddenDiscoveries`
+- `audioItems`
+- `storyChapters`
+- `scienceArticles`
+- `messages`
+- `messageReplies`
+- `mediaLibrary`
+- `privateJournal`
+
+Use suitable document structures, timestamps, ownership fields, publication states, and indexes.
+
+Use server timestamps where appropriate.
+
+Avoid storing duplicated unnecessary data.
+
+Never treat frontend localStorage as the source of truth for accounts, balances, publication status, messages, or other important data.
+
+## 6.4 Secure API Architecture
+
+Create protected Vercel API routes for operations that require server-side privileges.
+
+Use Firebase Admin SDK only on the server.
+
+Requirements:
+
+- Verify Firebase ID tokens.
+- Verify role and account authorization.
+- Validate every incoming request.
+- Validate file types and sizes.
+- Handle errors safely.
+- Add appropriate rate limits.
+- Do not expose service-account credentials.
+- Do not return secret environment variables.
+- Do not trust client-supplied user roles.
+- Never allow Hira to publish or modify admin-managed content.
+- Never allow an ordinary user to gain admin privileges by modifying requests.
+
+The admin API must not expose private journal content.
+
+The admin API must not retrieve private journal documents.
+
+Never include private journal plaintext in server responses or logs.
+
+## 6.5 Firebase Security Rules
+
+Generate complete, restrictive Firestore rules and Storage rules.
+
+Do not use open rules such as:
+
+`allow read, write: if true;`
+
+Do not leave production rules in test mode.
+
+Enforce the following:
+
+- Only authenticated authorized accounts can access protected application content.
+- Admin-only content-management writes are restricted to the admin.
+- Hira can read published content.
+- Hira cannot create or modify admin-managed published content.
+- Hira's private Question Room responses are accessible only to her.
+- Hira's private journal is accessible only to her authorized account.
+- Admin cannot read private journal records.
+- Private journal data cannot be accessed through public content queries.
+- Storage access is restricted by account, role, and file category.
+- Private journal attachments, if implemented, cannot be accessed by admin or other accounts.
+
+The Firebase Admin SDK bypasses Firestore security rules. Therefore, application code using Admin SDK must never retrieve or expose private journal records.
+
+Implement the private journal's client-side encryption requirement independently of Firebase security rules.
+
+Include complete rules files in the project.
+
+## 6.6 Environment Variables
+
+Create a `.env.example` file.
+
+Include clearly named placeholders for values such as:
+
+- Firebase web configuration.
+- Firebase project ID.
+- Firebase Admin service-account configuration.
+- Authorized admin UID.
+- Authorized Hira UID.
+- Any required security configuration.
+
+Never include real credentials.
+
+Explain which variables belong in Vercel and which are local development variables.
+
+Never expose Firebase Admin private keys or service-account secrets in frontend variables.
+
+Do not use a `VITE_` prefix for server-only secrets.
+
+If a service-account key is needed, store it only in secure server-side environment configuration.
+
+## 6.7 Firebase Setup
+
+Provide exact setup instructions for:
+
+1. Creating a Firebase project.
+2. Enabling Firebase Authentication.
+3. Creating the two authorized accounts.
+4. Assigning the correct roles or custom claims.
+5. Creating Firestore.
+6. Configuring Firebase Storage.
+7. Applying Firestore security rules.
+8. Applying Storage security rules.
+9. Deploying required indexes.
+10. Connecting Firebase to the Vercel project.
+
+The instructions must be beginner-friendly and step-by-step.
+
+Do not assume the user already knows Firebase.
+
+## 6.8 Vercel Deployment
+
+Prepare the project for deployment to Vercel.
+
+Include:
+
+- Correct project configuration.
+- Vercel routing configuration.
+- API function setup.
+- SPA route fallback where necessary.
+- Environment-variable instructions.
+- Firebase server-side configuration.
+- Production build scripts.
+- Deployment instructions.
+- Troubleshooting steps.
+
+The `/admin` route must work correctly after deployment.
+
+Do not expose protected admin data in publicly accessible static files.
+
+---
+
+# PART 7 — PRIVACY, SECURITY, AND RESPONSIBLE DESIGN
+
+Privacy is a core feature, not an optional detail.
+
+Requirements:
+
+- No public user registration.
+- No public member directory.
+- No public access to private memories or messages.
+- No unnecessary personal-data collection.
+- No GPS or location tracking.
+- No hidden surveillance.
+- No browser fingerprinting.
+- No invasive analytics.
+- No fake online indicators.
+- No deceptive notifications.
+- No forced engagement.
+- No emotional manipulation.
+- No fake AI identity.
+- No automatic messages pretending to be personally written.
+- No exposure of admin identity.
+- No exposure of private journal entries.
+
+Use privacy-conscious defaults.
+
+Add a simple privacy explanation that tells Hira what information is stored and which areas are private.
+
+Do not claim that data is completely private or impossible to access if the actual implementation does not support that claim.
+
+---
+
+# PART 8 — CONTENT AND LANGUAGE
+
+The website should support both Bengali and English.
+
+Default interface language: Bengali.
+
+Provide a simple language toggle where appropriate.
+
+Use natural, mature Bengali and clear English.
+
+Avoid generic AI-style love quotes and repetitive emotional phrases.
+
+The tone should be:
+
+- Warm.
+- Thoughtful.
+- Intelligent.
+- Personal.
+- Calm.
+- Respectful.
+- Occasionally mysterious.
+- Never childish or exaggerated.
+
+All personal memories and letters must be provided or approved by the admin.
+
+Do not fill the website with invented personal stories.
+
+For empty sections, create attractive empty states that invite future content without displaying fabricated memories.
+
+---
+
+# PART 9 — RESPONSIVE DESIGN AND ACCESSIBILITY
+
+The website must work beautifully on:
+
+- Android phones.
+- iPhones.
+- Tablets.
+- Laptops.
+- Desktop monitors.
+
+Mobile-first requirements:
+
+- Responsive cosmic background.
+- Touch-friendly navigation.
+- No horizontal overflow.
+- Readable typography.
+- Proper spacing.
+- Optimized images.
+- Lightweight animations.
+- Accessible forms.
+- Clear button states.
+- Proper loading indicators.
+- Useful empty states.
+- Useful error states.
+
+Accessibility requirements:
+
+- Keyboard navigation.
+- Visible focus indicators.
+- Semantic HTML.
+- Sufficient color contrast.
+- Labels for form fields.
+- Accessible media controls.
+- Reduced-motion support.
+- Meaningful image alternative text.
+
+Do not sacrifice usability for visual effects.
+
+---
+
+# PART 10 — PROJECT STRUCTURE AND CODE QUALITY
+
+Organize the project into clear folders.
+
+Suggested structure:
+
+`src/`
+- `components/`
+- `pages/`
+- `layouts/`
+- `features/`
+- `hooks/`
+- `services/`
+- `firebase/`
+- `context/`
+- `types/`
+- `utils/`
+- `styles/`
+
+`api/`
+- Protected server-side Vercel functions.
+
+`firebase/`
+- Firestore security rules.
+- Storage security rules.
+- Firestore indexes.
+- Setup documentation.
+
+`public/`
+- Static assets.
+
+Include:
+
+- `README.md`
+- `.env.example`
+- `package.json`
+- Vercel configuration.
+- Firebase configuration instructions.
+- Security documentation.
+- Deployment documentation.
+
+Use TypeScript types for important entities.
+
+Use reusable UI components.
+
+Keep business logic separate from presentation.
+
+Use understandable naming conventions.
+
+Add error handling and loading states.
+
+Do not put the entire application into one giant component.
+
+Do not create unnecessary dependencies.
+
+Do not leave broken imports, unused buttons, placeholder routes, or unfinished critical functionality.
+
+---
+
+# PART 11 — TESTING AND QUALITY CONTROL
+
+Before declaring the project complete, verify the implementation.
+
+Test the following:
+
+## Authentication
+- Admin login works.
+- Hira login works.
+- Invalid credentials are rejected.
+- Public registration is unavailable.
+- Unauthorized accounts cannot access protected routes.
+- User cannot access `/admin` by changing the URL.
+
+## User Experience
+- Landing page loads correctly.
+- All navigation links work.
+- Every section opens correctly.
+- Mobile layout is responsive.
+- Bengali and English display correctly.
+- Search and filters work where implemented.
+
+## Admin
+- Admin can create and edit content.
+- Admin can save drafts.
+- Admin can publish and unpublish content.
+- Admin can schedule content.
+- Admin can upload media.
+- Admin can manually reply to messages.
+- Delete actions require confirmation.
+
+## Privacy
+- Hira cannot access admin features.
+- Admin cannot access Hira's private journal through the UI.
+- Admin API endpoints do not expose journal data.
+- Journal entries are encrypted before storage.
+- Journal passphrase and encryption keys never leave the browser.
+- Private Question Room responses remain private.
+- Storage and database rules reject unauthorized access.
+
+## Data
+- Real database operations work.
+- Data persists after refresh.
+- No important feature depends on localStorage as its database.
+- No fake balances, fake users, fake statistics, or fake activity are displayed.
+
+## Deployment
+- Production build succeeds.
+- Vercel routing works.
+- Firebase configuration works.
+- Environment variables are documented.
+- No secret credentials appear in frontend bundles.
+- `/admin` functions correctly after deployment.
+
+Fix all critical issues found during testing.
+
+Do not simply claim a test passed without actually testing it.
+
+---
+
+# PART 12 — FINAL DELIVERY REQUIREMENTS
+
+I want a complete, usable project—not just a design concept.
+
+Deliver:
+
+1. The complete source code.
+2. All required frontend files.
+3. All required server-side API functions.
+4. Firebase configuration.
+5. Firestore rules.
+6. Storage rules.
+7. Firestore indexes.
+8. `.env.example`.
+9. Complete README.
+10. Firebase setup guide.
+11. Vercel deployment guide.
+12. Admin account provisioning instructions.
+13. Security and privacy explanation.
+14. A checklist of any remaining manual configuration.
+
+Do not generate fake credentials or pretend external services have been connected when they have not.
+
+If Firebase credentials are not available, implement the integration using clearly documented placeholders and explain exactly what the user must configure.
+
+Do not stop at a landing-page prototype.
+
+Do not replace required functionality with buttons that only look functional.
+
+Do not silently skip difficult sections.
+
+If a feature cannot be fully implemented in the current environment, explain the limitation and provide the closest real implementation possible.
+
+If the environment supports creating downloadable project files or a ZIP archive, package the complete project.
+
+Otherwise, provide the complete file structure and the full contents of every required file.
+
+---
+
+# FINAL PRODUCT VISION
+
+The finished project must be called **HIRA**.
+
+It should feel like a beautiful, private digital universe created exclusively for Hira.
+
+When she opens it, the experience should communicate that this is not an ordinary website.
+
+It is a carefully designed space where she can explore memories, discover new ideas, read letters, think about meaningful questions, enjoy science and mysteries, follow stories, listen to sounds, and keep her own private thoughts.
+
+Every interaction should be intentional.
+
+Every personal detail should be authentic.
+
+Her private journal must remain private.
+
+The website must be secure, functional, responsive, and ready for deployment.
+
+**Build the complete HIRA universe now. Prioritize a working, secure application over a superficial visual demonstration.**

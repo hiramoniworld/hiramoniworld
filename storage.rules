@@ -1,0 +1,38 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isSignedIn() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.email == 'hiramoniamar@gmail.com';
+    }
+
+    // Public universe media uploaded by Admin (images, audio, video)
+    match /universe-media/{category}/{allPaths=**} {
+      allow read: if isSignedIn() && category in ['image', 'audio', 'video'];
+      allow write: if isAdmin()
+        && category in ['image', 'audio', 'video']
+        && request.resource.size <= 50 * 1024 * 1024
+        && (
+          (category == 'image' && request.resource.contentType.matches('image/.*')) ||
+          (category == 'audio' && request.resource.contentType.matches('audio/.*')) ||
+          (category == 'video' && request.resource.contentType.matches('video/.*'))
+        );
+      allow delete: if isAdmin();
+    }
+
+    // Strictly owner-isolated private journal attachments (never accessible to admin)
+    match /private-journal/{userId}/{allPaths=**} {
+      allow read, write: if isSignedIn()
+        && request.auth.uid == userId
+        && request.resource.size <= 10 * 1024 * 1024;
+    }
+
+    // Default deny
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

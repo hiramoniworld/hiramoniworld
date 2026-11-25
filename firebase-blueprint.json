@@ -1,0 +1,437 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Authorized user profile and role assignment for Hira or Admin.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 254
+        },
+        "displayName": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "role": {
+          "type": "string",
+          "enum": ["hira", "admin"]
+        },
+        "preferredLanguage": {
+          "type": "string",
+          "enum": ["bn", "en"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "email", "role", "createdAt", "updatedAt"]
+    },
+    "AdminRecord": {
+      "title": "AdminRecord",
+      "description": "Server-trusted admin membership marker.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 40
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "label", "createdAt"]
+    },
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "Global HIRA universe configuration managed by Admin.",
+      "type": "object",
+      "properties": {
+        "siteTitle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "tagline": {
+          "type": "string",
+          "maxLength": 140
+        },
+        "secondaryPhrase": {
+          "type": "string",
+          "maxLength": 140
+        },
+        "welcomeTitleEn": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "welcomeBodyEn": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "welcomeTitleBn": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "welcomeBodyBn": {
+          "type": "string",
+          "maxLength": 1500
+        },
+        "defaultLanguage": {
+          "type": "string",
+          "enum": ["bn", "en"]
+        },
+        "birthdayMonthDay": {
+          "type": "string",
+          "pattern": "^[0-9]{2}-[0-9]{2}$",
+          "maxLength": 5
+        },
+        "visibleSections": {
+          "type": "array",
+          "description": "Bounded list of enabled section IDs (max 12)"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["siteTitle", "defaultLanguage", "birthdayMonthDay", "updatedAt"]
+    },
+    "Memory": {
+      "title": "Memory",
+      "description": "A celestial object in the Memory Galaxy.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "titleBn": { "type": "string", "maxLength": 160 },
+        "dateLabel": { "type": "string", "maxLength": 60 },
+        "story": { "type": "string", "maxLength": 12000 },
+        "storyBn": { "type": "string", "maxLength": 12000 },
+        "notes": { "type": "string", "maxLength": 2000 },
+        "celestialType": { "type": "string", "enum": ["star", "planet", "nebula", "moon", "comet"] },
+        "starX": { "type": "number" },
+        "starY": { "type": "number" },
+        "images": { "type": "array" },
+        "audioUrl": { "type": "string", "maxLength": 1000 },
+        "videoUrl": { "type": "string", "maxLength": 1000 },
+        "relatedIds": { "type": "array" },
+        "isFavoriteByHira": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["draft", "published", "scheduled", "unpublished"] },
+        "scheduledAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "celestialType", "status", "createdAt", "updatedAt"]
+    },
+    "DailyDiscovery": {
+      "title": "DailyDiscovery",
+      "description": "Daily curated discovery scheduled in Asia/Dhaka time.",
+      "type": "object",
+      "properties": {
+        "dateKey": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$", "maxLength": 10 },
+        "type": { "type": "string", "enum": ["question", "science_fact", "image", "thought", "message", "audio", "discovery", "clue", "story_excerpt", "mystery"] },
+        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "titleBn": { "type": "string", "maxLength": 160 },
+        "content": { "type": "string", "maxLength": 8000 },
+        "contentBn": { "type": "string", "maxLength": 8000 },
+        "imageUrl": { "type": "string", "maxLength": 1000 },
+        "audioUrl": { "type": "string", "maxLength": 1000 },
+        "isHidden": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["draft", "published", "scheduled", "unpublished"] },
+        "scheduledAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["dateKey", "type", "title", "status", "createdAt", "updatedAt"]
+    },
+    "Question": {
+      "title": "Question",
+      "description": "Reflective prompt for the Question Room.",
+      "type": "object",
+      "properties": {
+        "category": { "type": "string", "maxLength": 60 },
+        "questionEn": { "type": "string", "minLength": 1, "maxLength": 800 },
+        "questionBn": { "type": "string", "maxLength": 800 },
+        "contextNote": { "type": "string", "maxLength": 1000 },
+        "isDaily": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["draft", "published", "scheduled", "unpublished"] },
+        "scheduledAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["category", "questionEn", "status", "createdAt", "updatedAt"]
+    },
+    "PrivateQuestionResponse": {
+      "title": "PrivateQuestionResponse",
+      "description": "Hira's private answer or bookmark for a Question Room prompt.",
+      "type": "object",
+      "properties": {
+        "questionId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "ownerId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "responseText": { "type": "string", "maxLength": 10000 },
+        "isSaved": { "type": "boolean" },
+        "isSharedWithAdmin": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["questionId", "ownerId", "isSaved", "isSharedWithAdmin", "createdAt", "updatedAt"]
+    },
+    "Letter": {
+      "title": "Letter",
+      "description": "Digital letter in the Letter Archive.",
+      "type": "object",
+      "properties": {
+        "category": { "type": "string", "maxLength": 60 },
+        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "titleBn": { "type": "string", "maxLength": 160 },
+        "content": { "type": "string", "maxLength": 20000 },
+        "contentBn": { "type": "string", "maxLength": 20000 },
+        "imageUrl": { "type": "string", "maxLength": 1000 },
+        "audioUrl": { "type": "string", "maxLength": 1000 },
+        "writtenDate": { "type": "string", "maxLength": 40 },
+        "isReadByHira": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["draft", "published", "scheduled", "unpublished"] },
+        "scheduledAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["category", "title", "status", "createdAt", "updatedAt"]
+    },
+    "TimelineEntry": {
+      "title": "TimelineEntry",
+      "description": "Entry in the Past / Present / Future Time Machine.",
+      "type": "object",
+      "properties": {
+        "era": { "type": "string", "enum": ["past", "present", "future"] },
+        "dateLabel": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "sortOrder": { "type": "number" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "titleBn": { "type": "string", "maxLength": 160 },
+        "description": { "type": "string", "maxLength": 5000 },
+        "descriptionBn": { "type": "string", "maxLength": 5000 },
+        "entryType": { "type": "string", "maxLength": 50 },
+        "isRecurringBirthday": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["draft", "published", "scheduled", "unpublished"] },
+        "scheduledAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["era", "dateLabel", "title", "status", "createdAt", "updatedAt"]
+    },
+    "HiddenDiscovery": {
+      "title": "HiddenDiscovery",
+      "description": "Easter egg or unlockable chapter in Hidden Universe.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "titleBn": { "type": "string", "maxLength": 160 },
+        "clue": { "type": "string", "maxLength": 1000 },
+        "clueBn": { "type": "string", "maxLength": 1000 },
+        "content": { "type": "string", "maxLength": 10000 },
+        "contentBn": { "type": "string", "maxLength": 10000 },
+        "imageUrl": { "type": "string", "maxLength": 1000 },
+        "passcodeSha256": { "type": "string", "maxLength": 128 },
+        "isUnlockedByHira": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["draft", "published", "scheduled", "unpublished"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "status", "createdAt", "updatedAt"]
+    },
+    "AudioItem": {
+      "title": "AudioItem",
+      "description": "Audio item in Sound of Memories.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "titleBn": { "type": "string", "maxLength": 160 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "descriptionBn": { "type": "string", "maxLength": 2000 },
+        "category": { "type": "string", "maxLength": 60 },
+        "audioUrl": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "durationSeconds": { "type": "number" },
+        "relatedMemoryId": { "type": "string", "maxLength": 128 },
+        "status": { "type": "string", "enum": ["draft", "published", "scheduled", "unpublished"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "audioUrl", "status", "createdAt", "updatedAt"]
+    },
+    "StoryChapter": {
+      "title": "StoryChapter",
+      "description": "Chapter in the Unfinished Story archive.",
+      "type": "object",
+      "properties": {
+        "storyTitle": { "type": "string", "maxLength": 160 },
+        "chapterNumber": { "type": "number" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "titleBn": { "type": "string", "maxLength": 160 },
+        "content": { "type": "string", "maxLength": 30000 },
+        "contentBn": { "type": "string", "maxLength": 30000 },
+        "coverUrl": { "type": "string", "maxLength": 1000 },
+        "illustrationUrl": { "type": "string", "maxLength": 1000 },
+        "isReadByHira": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["draft", "published", "scheduled", "unpublished"] },
+        "scheduledAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["chapterNumber", "title", "status", "createdAt", "updatedAt"]
+    },
+    "ScienceArticle": {
+      "title": "ScienceArticle",
+      "description": "Scientific exploration in the Science Laboratory.",
+      "type": "object",
+      "properties": {
+        "topic": { "type": "string", "maxLength": 80 },
+        "epistemicLevel": { "type": "string", "enum": ["fact", "theory", "hypothesis", "speculation", "philosophy"] },
+        "title": { "type": "string", "minLength": 1, "maxLength": 180 },
+        "titleBn": { "type": "string", "maxLength": 180 },
+        "summary": { "type": "string", "maxLength": 1000 },
+        "summaryBn": { "type": "string", "maxLength": 1000 },
+        "body": { "type": "string", "maxLength": 25000 },
+        "bodyBn": { "type": "string", "maxLength": 25000 },
+        "diagramUrl": { "type": "string", "maxLength": 1000 },
+        "authorNotes": { "type": "string", "maxLength": 2000 },
+        "sources": { "type": "array" },
+        "isReadByHira": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["draft", "published", "scheduled", "unpublished"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["topic", "epistemicLevel", "title", "status", "createdAt", "updatedAt"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Private communication thread message between Hira and The Creator (Admin).",
+      "type": "object",
+      "properties": {
+        "senderId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "senderRole": { "type": "string", "enum": ["hira", "admin"] },
+        "body": { "type": "string", "minLength": 1, "maxLength": 5000 },
+        "isRead": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["senderId", "senderRole", "body", "isRead", "createdAt"]
+    },
+    "MediaItem": {
+      "title": "MediaItem",
+      "description": "Uploaded asset metadata in the centralized Media Library.",
+      "type": "object",
+      "properties": {
+        "fileName": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "mimeType": { "type": "string", "maxLength": 100 },
+        "sizeBytes": { "type": "number" },
+        "category": { "type": "string", "enum": ["image", "audio", "video"] },
+        "storagePath": { "type": "string", "maxLength": 500 },
+        "downloadUrl": { "type": "string", "minLength": 1, "maxLength": 1500 },
+        "uploadedBy": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["fileName", "category", "downloadUrl", "uploadedBy", "createdAt"]
+    },
+    "PrivateJournalEntry": {
+      "title": "PrivateJournalEntry",
+      "description": "Client-side AES-256-GCM encrypted private journal entry belonging exclusively to Hira.",
+      "type": "object",
+      "properties": {
+        "ownerId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "entryDate": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$", "maxLength": 10 },
+        "ciphertextTitle": { "type": "string", "minLength": 1, "maxLength": 4000 },
+        "ivTitle": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "ciphertextBody": { "type": "string", "minLength": 1, "maxLength": 120000 },
+        "ivBody": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "salt": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "kdfIterations": { "type": "number" },
+        "isDraft": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["ownerId", "entryDate", "ciphertextTitle", "ivTitle", "ciphertextBody", "ivBody", "salt", "kdfIterations", "isDraft", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Authorized user profile documents."
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/AdminRecord" },
+      "description": "Admin role membership lookup documents."
+    },
+    "/siteSettings/{settingId}": {
+      "schema": { "$ref": "#/entities/SiteSettings" },
+      "description": "Global HIRA universe settings."
+    },
+    "/memories/{memoryId}": {
+      "schema": { "$ref": "#/entities/Memory" },
+      "description": "Memory Galaxy celestial records."
+    },
+    "/dailyDiscoveries/{discoveryId}": {
+      "schema": { "$ref": "#/entities/DailyDiscovery" },
+      "description": "Daily Discovery items scheduled in Asia/Dhaka."
+    },
+    "/questions/{questionId}": {
+      "schema": { "$ref": "#/entities/Question" },
+      "description": "Question Room reflective prompts."
+    },
+    "/privateQuestionResponses/{responseId}": {
+      "schema": { "$ref": "#/entities/PrivateQuestionResponse" },
+      "description": "Private Question Room answers owned by Hira."
+    },
+    "/letters/{letterId}": {
+      "schema": { "$ref": "#/entities/Letter" },
+      "description": "Letter Archive letters."
+    },
+    "/timelineEntries/{entryId}": {
+      "schema": { "$ref": "#/entities/TimelineEntry" },
+      "description": "Past, Present, and Future Time Machine entries."
+    },
+    "/hiddenDiscoveries/{hiddenId}": {
+      "schema": { "$ref": "#/entities/HiddenDiscovery" },
+      "description": "Hidden Universe unlockable discoveries."
+    },
+    "/audioItems/{audioId}": {
+      "schema": { "$ref": "#/entities/AudioItem" },
+      "description": "Sound of Memories audio items."
+    },
+    "/storyChapters/{chapterId}": {
+      "schema": { "$ref": "#/entities/StoryChapter" },
+      "description": "Unfinished Story chapters."
+    },
+    "/scienceArticles/{articleId}": {
+      "schema": { "$ref": "#/entities/ScienceArticle" },
+      "description": "Science Laboratory research articles."
+    },
+    "/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/Message" },
+      "description": "Private communication messages between Hira and Admin."
+    },
+    "/mediaLibrary/{mediaId}": {
+      "schema": { "$ref": "#/entities/MediaItem" },
+      "description": "Admin-managed media library entries."
+    },
+    "/privateJournal/{entryId}": {
+      "schema": { "$ref": "#/entities/PrivateJournalEntry" },
+      "description": "Client-encrypted private journal entries accessible exclusively to Hira."
+    }
+  }
+}

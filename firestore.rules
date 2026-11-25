@@ -1,0 +1,650 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net: Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Connection health check document (contains no sensitive data)
+    match /test/connection {
+      allow get: if true;
+    }
+
+    // =========================================================================
+    // Global Hardened Helpers
+    // =========================================================================
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isTokenAdmin() {
+      return isVerifiedUser() && request.auth.token.email == 'hiramoniamar@gmail.com';
+    }
+
+    function isAdmin() {
+      return isTokenAdmin() || (
+        isVerifiedUser() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidStatus(status) {
+      return status in ['draft', 'published', 'scheduled', 'unpublished'];
+    }
+
+    function isPublishedOrDue(data) {
+      return data.status == 'published' || (
+        data.status == 'scheduled' &&
+        data.keys().hasAll(['scheduledAt']) &&
+        data.scheduledAt is timestamp &&
+        data.scheduledAt <= request.time
+      );
+    }
+
+    function isValidString(val, minLen, maxLen) {
+      return val is string && val.size() >= minLen && val.size() <= maxLen;
+    }
+
+    function isValidOptionalString(data, field, maxLen) {
+      return !(field in data) || (data[field] is string && data[field].size() <= maxLen);
+    }
+
+    function isValidOptionalTimestamp(data, field) {
+      return !(field in data) || data[field] is timestamp || data[field] == null;
+    }
+
+    // =========================================================================
+    // Entity Validation Blueprints
+    // =========================================================================
+    function isValidUserProfile(data) {
+      return data.keys().hasAll(['uid', 'email', 'role', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['uid', 'email', 'displayName', 'role', 'preferredLanguage', 'createdAt', 'updatedAt'])
+        && isValidId(data.uid)
+        && isValidString(data.email, 3, 254)
+        && isValidOptionalString(data, 'displayName', 80)
+        && data.role in ['hira', 'admin']
+        && (!('preferredLanguage' in data) || data.preferredLanguage in ['bn', 'en'])
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidAdminRecord(data) {
+      return data.keys().hasAll(['uid', 'label', 'createdAt'])
+        && data.keys().hasOnly(['uid', 'label', 'createdAt'])
+        && isValidId(data.uid)
+        && isValidString(data.label, 1, 40)
+        && data.createdAt is timestamp;
+    }
+
+    function isValidSiteSettings(data) {
+      return data.keys().hasAll(['siteTitle', 'defaultLanguage', 'birthdayMonthDay', 'updatedAt'])
+        && data.keys().hasOnly([
+          'siteTitle', 'tagline', 'secondaryPhrase',
+          'welcomeTitleEn', 'welcomeBodyEn', 'welcomeTitleBn', 'welcomeBodyBn',
+          'defaultLanguage', 'birthdayMonthDay', 'visibleSections', 'updatedAt'
+        ])
+        && isValidString(data.siteTitle, 1, 60)
+        && isValidOptionalString(data, 'tagline', 140)
+        && isValidOptionalString(data, 'secondaryPhrase', 140)
+        && isValidOptionalString(data, 'welcomeTitleEn', 200)
+        && isValidOptionalString(data, 'welcomeBodyEn', 1500)
+        && isValidOptionalString(data, 'welcomeTitleBn', 200)
+        && isValidOptionalString(data, 'welcomeBodyBn', 1500)
+        && data.defaultLanguage in ['bn', 'en']
+        && isValidString(data.birthdayMonthDay, 5, 5)
+        && data.birthdayMonthDay.matches('^[0-9]{2}-[0-9]{2}$')
+        && (!('visibleSections' in data) || (
+          data.visibleSections is list &&
+          data.visibleSections.size() <= 12 &&
+          (data.visibleSections.size() == 0 || data.visibleSections[0] is string)
+        ))
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidMemory(data) {
+      return data.keys().hasAll(['title', 'celestialType', 'status', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly([
+          'title', 'titleBn', 'dateLabel', 'story', 'storyBn', 'notes',
+          'celestialType', 'starX', 'starY', 'images', 'audioUrl', 'videoUrl',
+          'relatedIds', 'isFavoriteByHira', 'status', 'scheduledAt', 'createdAt', 'updatedAt'
+        ])
+        && isValidString(data.title, 1, 160)
+        && isValidOptionalString(data, 'titleBn', 160)
+        && isValidOptionalString(data, 'dateLabel', 60)
+        && isValidOptionalString(data, 'story', 12000)
+        && isValidOptionalString(data, 'storyBn', 12000)
+        && isValidOptionalString(data, 'notes', 2000)
+        && data.celestialType in ['star', 'planet', 'nebula', 'moon', 'comet']
+        && (!('starX' in data) || (data.starX is number && data.starX >= 0 && data.starX <= 100))
+        && (!('starY' in data) || (data.starY is number && data.starY >= 0 && data.starY <= 100))
+        && (!('images' in data) || (
+          data.images is list &&
+          data.images.size() <= 10 &&
+          (data.images.size() == 0 || data.images[0] is string)
+        ))
+        && isValidOptionalString(data, 'audioUrl', 1000)
+        && isValidOptionalString(data, 'videoUrl', 1000)
+        && (!('relatedIds' in data) || (
+          data.relatedIds is list &&
+          data.relatedIds.size() <= 10 &&
+          (data.relatedIds.size() == 0 || data.relatedIds[0] is string)
+        ))
+        && (!('isFavoriteByHira' in data) || data.isFavoriteByHira is bool)
+        && isValidStatus(data.status)
+        && isValidOptionalTimestamp(data, 'scheduledAt')
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidDailyDiscovery(data) {
+      return data.keys().hasAll(['dateKey', 'type', 'title', 'status', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly([
+          'dateKey', 'type', 'title', 'titleBn', 'content', 'contentBn',
+          'imageUrl', 'audioUrl', 'isHidden', 'status', 'scheduledAt', 'createdAt', 'updatedAt'
+        ])
+        && isValidString(data.dateKey, 10, 10)
+        && data.dateKey.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && data.type in ['question', 'science_fact', 'image', 'thought', 'message', 'audio', 'discovery', 'clue', 'story_excerpt', 'mystery']
+        && isValidString(data.title, 1, 160)
+        && isValidOptionalString(data, 'titleBn', 160)
+        && isValidOptionalString(data, 'content', 8000)
+        && isValidOptionalString(data, 'contentBn', 8000)
+        && isValidOptionalString(data, 'imageUrl', 1000)
+        && isValidOptionalString(data, 'audioUrl', 1000)
+        && (!('isHidden' in data) || data.isHidden is bool)
+        && isValidStatus(data.status)
+        && isValidOptionalTimestamp(data, 'scheduledAt')
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidQuestion(data) {
+      return data.keys().hasAll(['category', 'questionEn', 'status', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly([
+          'category', 'questionEn', 'questionBn', 'contextNote',
+          'isDaily', 'status', 'scheduledAt', 'createdAt', 'updatedAt'
+        ])
+        && isValidString(data.category, 1, 60)
+        && isValidString(data.questionEn, 1, 800)
+        && isValidOptionalString(data, 'questionBn', 800)
+        && isValidOptionalString(data, 'contextNote', 1000)
+        && (!('isDaily' in data) || data.isDaily is bool)
+        && isValidStatus(data.status)
+        && isValidOptionalTimestamp(data, 'scheduledAt')
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidPrivateQuestionResponse(data) {
+      return data.keys().hasAll(['questionId', 'ownerId', 'isSaved', 'isSharedWithAdmin', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['questionId', 'ownerId', 'responseText', 'isSaved', 'isSharedWithAdmin', 'createdAt', 'updatedAt'])
+        && isValidId(data.questionId)
+        && isValidId(data.ownerId)
+        && data.ownerId == request.auth.uid
+        && isValidOptionalString(data, 'responseText', 10000)
+        && data.isSaved is bool
+        && data.isSharedWithAdmin is bool
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidLetter(data) {
+      return data.keys().hasAll(['category', 'title', 'status', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly([
+          'category', 'title', 'titleBn', 'content', 'contentBn',
+          'imageUrl', 'audioUrl', 'writtenDate', 'isReadByHira',
+          'status', 'scheduledAt', 'createdAt', 'updatedAt'
+        ])
+        && isValidString(data.category, 1, 60)
+        && isValidString(data.title, 1, 160)
+        && isValidOptionalString(data, 'titleBn', 160)
+        && isValidOptionalString(data, 'content', 20000)
+        && isValidOptionalString(data, 'contentBn', 20000)
+        && isValidOptionalString(data, 'imageUrl', 1000)
+        && isValidOptionalString(data, 'audioUrl', 1000)
+        && isValidOptionalString(data, 'writtenDate', 40)
+        && (!('isReadByHira' in data) || data.isReadByHira is bool)
+        && isValidStatus(data.status)
+        && isValidOptionalTimestamp(data, 'scheduledAt')
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidTimelineEntry(data) {
+      return data.keys().hasAll(['era', 'dateLabel', 'title', 'status', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly([
+          'era', 'dateLabel', 'sortOrder', 'title', 'titleBn',
+          'description', 'descriptionBn', 'entryType', 'isRecurringBirthday',
+          'status', 'scheduledAt', 'createdAt', 'updatedAt'
+        ])
+        && data.era in ['past', 'present', 'future']
+        && isValidString(data.dateLabel, 1, 80)
+        && (!('sortOrder' in data) || data.sortOrder is number)
+        && isValidString(data.title, 1, 160)
+        && isValidOptionalString(data, 'titleBn', 160)
+        && isValidOptionalString(data, 'description', 5000)
+        && isValidOptionalString(data, 'descriptionBn', 5000)
+        && isValidOptionalString(data, 'entryType', 50)
+        && (!('isRecurringBirthday' in data) || data.isRecurringBirthday is bool)
+        && isValidStatus(data.status)
+        && isValidOptionalTimestamp(data, 'scheduledAt')
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidHiddenDiscovery(data) {
+      return data.keys().hasAll(['title', 'status', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly([
+          'title', 'titleBn', 'clue', 'clueBn', 'content', 'contentBn',
+          'imageUrl', 'passcodeSha256', 'isUnlockedByHira', 'status', 'createdAt', 'updatedAt'
+        ])
+        && isValidString(data.title, 1, 160)
+        && isValidOptionalString(data, 'titleBn', 160)
+        && isValidOptionalString(data, 'clue', 1000)
+        && isValidOptionalString(data, 'clueBn', 1000)
+        && isValidOptionalString(data, 'content', 10000)
+        && isValidOptionalString(data, 'contentBn', 10000)
+        && isValidOptionalString(data, 'imageUrl', 1000)
+        && isValidOptionalString(data, 'passcodeSha256', 128)
+        && (!('isUnlockedByHira' in data) || data.isUnlockedByHira is bool)
+        && isValidStatus(data.status)
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidAudioItem(data) {
+      return data.keys().hasAll(['title', 'audioUrl', 'status', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly([
+          'title', 'titleBn', 'description', 'descriptionBn', 'category',
+          'audioUrl', 'durationSeconds', 'relatedMemoryId', 'status', 'createdAt', 'updatedAt'
+        ])
+        && isValidString(data.title, 1, 160)
+        && isValidOptionalString(data, 'titleBn', 160)
+        && isValidOptionalString(data, 'description', 2000)
+        && isValidOptionalString(data, 'descriptionBn', 2000)
+        && isValidOptionalString(data, 'category', 60)
+        && isValidString(data.audioUrl, 1, 1000)
+        && (!('durationSeconds' in data) || (data.durationSeconds is number && data.durationSeconds >= 0))
+        && isValidOptionalString(data, 'relatedMemoryId', 128)
+        && isValidStatus(data.status)
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidStoryChapter(data) {
+      return data.keys().hasAll(['chapterNumber', 'title', 'status', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly([
+          'storyTitle', 'chapterNumber', 'title', 'titleBn', 'content', 'contentBn',
+          'coverUrl', 'illustrationUrl', 'isReadByHira', 'status', 'scheduledAt', 'createdAt', 'updatedAt'
+        ])
+        && isValidOptionalString(data, 'storyTitle', 160)
+        && data.chapterNumber is number && data.chapterNumber >= 0 && data.chapterNumber <= 500
+        && isValidString(data.title, 1, 160)
+        && isValidOptionalString(data, 'titleBn', 160)
+        && isValidOptionalString(data, 'content', 30000)
+        && isValidOptionalString(data, 'contentBn', 30000)
+        && isValidOptionalString(data, 'coverUrl', 1000)
+        && isValidOptionalString(data, 'illustrationUrl', 1000)
+        && (!('isReadByHira' in data) || data.isReadByHira is bool)
+        && isValidStatus(data.status)
+        && isValidOptionalTimestamp(data, 'scheduledAt')
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidScienceArticle(data) {
+      return data.keys().hasAll(['topic', 'epistemicLevel', 'title', 'status', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly([
+          'topic', 'epistemicLevel', 'title', 'titleBn', 'summary', 'summaryBn',
+          'body', 'bodyBn', 'diagramUrl', 'authorNotes', 'sources', 'isReadByHira',
+          'status', 'createdAt', 'updatedAt'
+        ])
+        && isValidString(data.topic, 1, 80)
+        && data.epistemicLevel in ['fact', 'theory', 'hypothesis', 'speculation', 'philosophy']
+        && isValidString(data.title, 1, 180)
+        && isValidOptionalString(data, 'titleBn', 180)
+        && isValidOptionalString(data, 'summary', 1000)
+        && isValidOptionalString(data, 'summaryBn', 1000)
+        && isValidOptionalString(data, 'body', 25000)
+        && isValidOptionalString(data, 'bodyBn', 25000)
+        && isValidOptionalString(data, 'diagramUrl', 1000)
+        && isValidOptionalString(data, 'authorNotes', 2000)
+        && (!('sources' in data) || (
+          data.sources is list &&
+          data.sources.size() <= 10 &&
+          (data.sources.size() == 0 || data.sources[0] is string)
+        ))
+        && (!('isReadByHira' in data) || data.isReadByHira is bool)
+        && isValidStatus(data.status)
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidMessage(data) {
+      return data.keys().hasAll(['senderId', 'senderRole', 'body', 'isRead', 'createdAt'])
+        && data.keys().hasOnly(['senderId', 'senderRole', 'body', 'isRead', 'createdAt'])
+        && isValidId(data.senderId)
+        && data.senderId == request.auth.uid
+        && data.senderRole in ['hira', 'admin']
+        && isValidString(data.body, 1, 5000)
+        && data.isRead is bool
+        && data.createdAt is timestamp;
+    }
+
+    function isValidMediaItem(data) {
+      return data.keys().hasAll(['fileName', 'category', 'downloadUrl', 'uploadedBy', 'createdAt'])
+        && data.keys().hasOnly(['fileName', 'mimeType', 'sizeBytes', 'category', 'storagePath', 'downloadUrl', 'uploadedBy', 'createdAt'])
+        && isValidString(data.fileName, 1, 200)
+        && isValidOptionalString(data, 'mimeType', 100)
+        && (!('sizeBytes' in data) || (data.sizeBytes is number && data.sizeBytes >= 0 && data.sizeBytes <= 52428800))
+        && data.category in ['image', 'audio', 'video']
+        && isValidOptionalString(data, 'storagePath', 500)
+        && isValidString(data.downloadUrl, 1, 1500)
+        && isValidId(data.uploadedBy)
+        && data.uploadedBy == request.auth.uid
+        && data.createdAt is timestamp;
+    }
+
+    function isValidPrivateJournalEntry(data) {
+      return data.keys().hasAll(['ownerId', 'entryDate', 'ciphertextTitle', 'ivTitle', 'ciphertextBody', 'ivBody', 'salt', 'kdfIterations', 'isDraft', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['ownerId', 'entryDate', 'ciphertextTitle', 'ivTitle', 'ciphertextBody', 'ivBody', 'salt', 'kdfIterations', 'isDraft', 'createdAt', 'updatedAt'])
+        && isValidId(data.ownerId)
+        && data.ownerId == request.auth.uid
+        && isValidString(data.entryDate, 10, 10)
+        && data.entryDate.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && isValidString(data.ciphertextTitle, 1, 4000)
+        && isValidString(data.ivTitle, 1, 64)
+        && isValidString(data.ciphertextBody, 1, 120000)
+        && isValidString(data.ivBody, 1, 64)
+        && isValidString(data.salt, 1, 64)
+        && data.kdfIterations is number && data.kdfIterations >= 100000 && data.kdfIterations <= 2000000
+        && data.isDraft is bool
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    // =========================================================================
+    // Collection Rules
+    // =========================================================================
+
+    match /users/{userId} {
+      allow get: if isValidId(userId) && isVerifiedUser() && (request.auth.uid == userId || isAdmin());
+      allow list: if isTokenAdmin();
+      allow create: if isValidId(userId) && isVerifiedUser() && isValidUserProfile(incoming())
+        && incoming().uid == userId
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time
+        && (
+          isAdmin() ||
+          (request.auth.uid == userId && incoming().role == 'hira')
+        );
+      allow update: if isValidId(userId) && isVerifiedUser() && isValidUserProfile(incoming())
+        && incoming().uid == existing().uid
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          isAdmin() ||
+          (
+            request.auth.uid == userId &&
+            incoming().role == existing().role &&
+            incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'preferredLanguage', 'updatedAt'])
+          )
+        );
+      allow delete: if isValidId(userId) && isAdmin();
+    }
+
+    match /admins/{adminId} {
+      allow get: if isValidId(adminId) && isVerifiedUser() && (request.auth.uid == adminId || isAdmin());
+      allow list: if isTokenAdmin();
+      allow create: if isValidId(adminId) && isAdmin() && isValidAdminRecord(incoming())
+        && incoming().uid == adminId
+        && incoming().createdAt == request.time;
+      allow update: if false;
+      allow delete: if isValidId(adminId) && isAdmin();
+    }
+
+    match /siteSettings/{settingId} {
+      allow get: if isValidId(settingId) && isVerifiedUser();
+      allow list: if isTokenAdmin() || (isVerifiedUser() && resource.data.siteTitle is string);
+      allow create: if isValidId(settingId) && isAdmin() && isValidSiteSettings(incoming())
+        && incoming().updatedAt == request.time;
+      allow update: if isValidId(settingId) && isAdmin() && isValidSiteSettings(incoming())
+        && incoming().updatedAt == request.time;
+      allow delete: if isValidId(settingId) && isAdmin();
+    }
+
+    match /memories/{memoryId} {
+      allow get: if isValidId(memoryId) && isVerifiedUser() && (isAdmin() || isPublishedOrDue(existing()));
+      allow list: if isTokenAdmin() || (isVerifiedUser() && isPublishedOrDue(resource.data));
+      allow create: if isValidId(memoryId) && isAdmin() && isValidMemory(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isValidId(memoryId) && isVerifiedUser() && isValidMemory(incoming())
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          isAdmin() ||
+          (
+            isPublishedOrDue(existing()) &&
+            incoming().diff(existing()).affectedKeys().hasOnly(['isFavoriteByHira', 'updatedAt'])
+          )
+        );
+      allow delete: if isValidId(memoryId) && isAdmin();
+    }
+
+    match /dailyDiscoveries/{discoveryId} {
+      allow get: if isValidId(discoveryId) && isVerifiedUser() && (isAdmin() || isPublishedOrDue(existing()));
+      allow list: if isTokenAdmin() || (isVerifiedUser() && isPublishedOrDue(resource.data));
+      allow create: if isValidId(discoveryId) && isAdmin() && isValidDailyDiscovery(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isValidId(discoveryId) && isAdmin() && isValidDailyDiscovery(incoming())
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time;
+      allow delete: if isValidId(discoveryId) && isAdmin();
+    }
+
+    match /questions/{questionId} {
+      allow get: if isValidId(questionId) && isVerifiedUser() && (isAdmin() || isPublishedOrDue(existing()));
+      allow list: if isTokenAdmin() || (isVerifiedUser() && isPublishedOrDue(resource.data));
+      allow create: if isValidId(questionId) && isAdmin() && isValidQuestion(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isValidId(questionId) && isAdmin() && isValidQuestion(incoming())
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time;
+      allow delete: if isValidId(questionId) && isAdmin();
+    }
+
+    match /privateQuestionResponses/{responseId} {
+      allow get: if isValidId(responseId) && isVerifiedUser() && (
+        existing().ownerId == request.auth.uid ||
+        (isAdmin() && existing().isSharedWithAdmin == true)
+      );
+      allow list: if isVerifiedUser() && (
+        resource.data.ownerId == request.auth.uid ||
+        (isTokenAdmin() && resource.data.isSharedWithAdmin == true)
+      );
+      allow create: if isValidId(responseId) && isVerifiedUser() && isValidPrivateQuestionResponse(incoming())
+        && exists(/databases/$(database)/documents/questions/$(incoming().questionId))
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isValidId(responseId) && isVerifiedUser() && isValidPrivateQuestionResponse(incoming())
+        && existing().ownerId == request.auth.uid
+        && incoming().ownerId == existing().ownerId
+        && incoming().questionId == existing().questionId
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly(['responseText', 'isSaved', 'isSharedWithAdmin', 'updatedAt']);
+      allow delete: if isValidId(responseId) && isVerifiedUser() && existing().ownerId == request.auth.uid;
+    }
+
+    match /letters/{letterId} {
+      allow get: if isValidId(letterId) && isVerifiedUser() && (isAdmin() || isPublishedOrDue(existing()));
+      allow list: if isTokenAdmin() || (isVerifiedUser() && isPublishedOrDue(resource.data));
+      allow create: if isValidId(letterId) && isAdmin() && isValidLetter(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isValidId(letterId) && isVerifiedUser() && isValidLetter(incoming())
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          isAdmin() ||
+          (
+            isPublishedOrDue(existing()) &&
+            incoming().diff(existing()).affectedKeys().hasOnly(['isReadByHira', 'updatedAt'])
+          )
+        );
+      allow delete: if isValidId(letterId) && isAdmin();
+    }
+
+    match /timelineEntries/{entryId} {
+      allow get: if isValidId(entryId) && isVerifiedUser() && (isAdmin() || isPublishedOrDue(existing()));
+      allow list: if isTokenAdmin() || (isVerifiedUser() && isPublishedOrDue(resource.data));
+      allow create: if isValidId(entryId) && isAdmin() && isValidTimelineEntry(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isValidId(entryId) && isAdmin() && isValidTimelineEntry(incoming())
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time;
+      allow delete: if isValidId(entryId) && isAdmin();
+    }
+
+    match /hiddenDiscoveries/{hiddenId} {
+      allow get: if isValidId(hiddenId) && isVerifiedUser() && (isAdmin() || existing().status == 'published');
+      allow list: if isTokenAdmin() || (isVerifiedUser() && resource.data.status == 'published');
+      allow create: if isValidId(hiddenId) && isAdmin() && isValidHiddenDiscovery(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isValidId(hiddenId) && isVerifiedUser() && isValidHiddenDiscovery(incoming())
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          isAdmin() ||
+          (
+            existing().status == 'published' &&
+            incoming().diff(existing()).affectedKeys().hasOnly(['isUnlockedByHira', 'updatedAt'])
+          )
+        );
+      allow delete: if isValidId(hiddenId) && isAdmin();
+    }
+
+    match /audioItems/{audioId} {
+      allow get: if isValidId(audioId) && isVerifiedUser() && (isAdmin() || existing().status == 'published');
+      allow list: if isTokenAdmin() || (isVerifiedUser() && resource.data.status == 'published');
+      allow create: if isValidId(audioId) && isAdmin() && isValidAudioItem(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isValidId(audioId) && isAdmin() && isValidAudioItem(incoming())
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time;
+      allow delete: if isValidId(audioId) && isAdmin();
+    }
+
+    match /storyChapters/{chapterId} {
+      allow get: if isValidId(chapterId) && isVerifiedUser() && (isAdmin() || isPublishedOrDue(existing()));
+      allow list: if isTokenAdmin() || (isVerifiedUser() && isPublishedOrDue(resource.data));
+      allow create: if isValidId(chapterId) && isAdmin() && isValidStoryChapter(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isValidId(chapterId) && isVerifiedUser() && isValidStoryChapter(incoming())
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          isAdmin() ||
+          (
+            isPublishedOrDue(existing()) &&
+            incoming().diff(existing()).affectedKeys().hasOnly(['isReadByHira', 'updatedAt'])
+          )
+        );
+      allow delete: if isValidId(chapterId) && isAdmin();
+    }
+
+    match /scienceArticles/{articleId} {
+      allow get: if isValidId(articleId) && isVerifiedUser() && (isAdmin() || existing().status == 'published');
+      allow list: if isTokenAdmin() || (isVerifiedUser() && resource.data.status == 'published');
+      allow create: if isValidId(articleId) && isAdmin() && isValidScienceArticle(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isValidId(articleId) && isVerifiedUser() && isValidScienceArticle(incoming())
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          isAdmin() ||
+          (
+            existing().status == 'published' &&
+            incoming().diff(existing()).affectedKeys().hasOnly(['isReadByHira', 'updatedAt'])
+          )
+        );
+      allow delete: if isValidId(articleId) && isAdmin();
+    }
+
+    match /messages/{messageId} {
+      allow get: if isValidId(messageId) && isVerifiedUser() && (
+        isAdmin() || existing().senderId == request.auth.uid || existing().senderRole == 'admin'
+      );
+      allow list: if isTokenAdmin() || (
+        isVerifiedUser() && (resource.data.senderId == request.auth.uid || resource.data.senderRole == 'admin')
+      );
+      allow create: if isValidId(messageId) && isVerifiedUser() && isValidMessage(incoming())
+        && incoming().createdAt == request.time
+        && (
+          (isAdmin() && incoming().senderRole == 'admin') ||
+          (!isAdmin() && incoming().senderRole == 'hira')
+        );
+      allow update: if isValidId(messageId) && isVerifiedUser() && isValidMessage(incoming())
+        && incoming().senderId == existing().senderId
+        && incoming().senderRole == existing().senderRole
+        && incoming().body == existing().body
+        && incoming().createdAt == existing().createdAt
+        && incoming().diff(existing()).affectedKeys().hasOnly(['isRead']);
+      allow delete: if isValidId(messageId) && isAdmin();
+    }
+
+    match /mediaLibrary/{mediaId} {
+      allow get: if isValidId(mediaId) && isVerifiedUser();
+      allow list: if isTokenAdmin() || (isVerifiedUser() && resource.data.category in ['image', 'audio', 'video']);
+      allow create: if isValidId(mediaId) && isAdmin() && isValidMediaItem(incoming())
+        && incoming().createdAt == request.time;
+      allow update: if false;
+      allow delete: if isValidId(mediaId) && isAdmin();
+    }
+
+    // THE MIRROR — Client-Encrypted Private Journal
+    // ZERO admin access. Strictly owner-only (ownerId == request.auth.uid).
+    match /privateJournal/{entryId} {
+      allow get: if isValidId(entryId) && isVerifiedUser() && existing().ownerId == request.auth.uid;
+      allow list: if isVerifiedUser() && resource.data.ownerId == request.auth.uid;
+      allow create: if isValidId(entryId) && isVerifiedUser() && isValidPrivateJournalEntry(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isValidId(entryId) && isVerifiedUser() && isValidPrivateJournalEntry(incoming())
+        && existing().ownerId == request.auth.uid
+        && incoming().ownerId == existing().ownerId
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'entryDate', 'ciphertextTitle', 'ivTitle', 'ciphertextBody', 'ivBody',
+          'salt', 'kdfIterations', 'isDraft', 'updatedAt'
+        ]);
+      allow delete: if isValidId(entryId) && isVerifiedUser() && existing().ownerId == request.auth.uid;
+    }
+  }
+}

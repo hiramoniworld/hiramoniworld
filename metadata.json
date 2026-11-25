@@ -1,0 +1,8 @@
+{
+  "name": "HIRA",
+  "description": "A Universe Made Just for You — a private digital cosmos created exclusively for Hira.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
