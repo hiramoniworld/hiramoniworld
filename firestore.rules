@@ -31,11 +31,19 @@ service cloud.firestore {
     }
 
     function isVerifiedUser() {
-      return isSignedIn() && request.auth.token.email_verified == true;
+      return isSignedIn() && (
+        request.auth.token.email_verified == true ||
+        (
+          request.auth.token.email == 'hiramoniworld@gmail.com' &&
+          request.auth.token.firebase.sign_in_provider == 'password'
+        )
+      );
     }
 
     function isTokenAdmin() {
-      return isVerifiedUser() && request.auth.token.email == 'hiramoniamar@gmail.com';
+      return isSignedIn()
+        && request.auth.token.email_verified == true
+        && request.auth.token.email == 'hiramoniamar@gmail.com';
     }
 
     function isAdmin() {

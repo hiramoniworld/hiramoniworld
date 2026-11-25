@@ -50,7 +50,7 @@ export const PrivateMessagesPage: React.FC = () => {
       const checkResp = await fetch('/api/messages/validate', {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${token}`,
+          'X-Firebase-Token': token,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ body: draft.trim() }),
@@ -76,20 +76,9 @@ export const PrivateMessagesPage: React.FC = () => {
       <SectionHeader
         kicker={isBn ? '১১ · ব্যক্তিগত বার্তা' : '11 · PRIVATE MESSAGES'}
         title={isBn ? 'ব্যক্তিগত বার্তা' : 'Private Communication'}
-        subtitle={
-          isBn
-            ? 'এটি কোনো এআই চ্যাটবট নয়। এখানে পাঠানো প্রতিটি বার্তার উত্তর নির্মাতা নিজে হাতে লিখে পাঠান।'
-            : 'This is not an AI chatbot. There are no automated replies—every response here is written manually by The Creator.'
-        }
       />
 
       <div className="border border-slate-800 bg-[#0C1120]/85 rounded-xl overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-800 bg-[#080C17] text-xs text-slate-400">
-          {isBn
-            ? 'স্বচ্ছতার নোট: কোনো ভুয়া অনলাইন স্ট্যাটাস বা স্বয়ংক্রিয় টাইপিং দেখানো হয় না। উত্তর এলে সময় অনুযায়ী এখানে দেখা যাবে।'
-            : 'Transparency note: No simulated online status or automated typing indicators are used. Manual replies appear here with their real timestamp.'}
-        </div>
-
         <div className="p-6 space-y-4 max-h-[500px] overflow-y-auto">
           {loading ? (
             <p className="text-center text-sm text-slate-400 py-8">

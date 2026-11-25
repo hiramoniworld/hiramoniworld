@@ -23,16 +23,26 @@ export const AdminLoginGate: React.FC<{ children: React.ReactNode }> = ({ childr
       try {
         const token = await user.getIdToken();
         const resp = await fetch('/api/admin/verify', {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { 'X-Firebase-Token': token },
         });
         if (!active) return;
-        if (resp.ok) {
-          setServerVerified(true);
-          setServerError(null);
-        } else {
+        const contentType = resp.headers.get('content-type') || '';
+        if (resp.ok && contentType.includes('application/json')) {
+          const data = (await resp.json().catch(() => ({}))) as { authorized?: boolean; error?: string };
+          if (data.authorized) {
+            setServerVerified(true);
+            setServerError(null);
+          } else {
+            setServerVerified(false);
+            setServerError(data.error || 'Admin authorization denied.');
+          }
+        } else if (contentType.includes('application/json')) {
           setServerVerified(false);
           const data = (await resp.json().catch(() => ({}))) as { error?: string };
           setServerError(data.error || 'Admin authorization denied.');
+        } else {
+          // Fallback when running behind static host or proxy without JSON /api response
+          setServerVerified(role === 'admin');
         }
       } catch {
         // Fallback when running purely client-side without Node /api

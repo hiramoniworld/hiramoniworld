@@ -25,7 +25,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     return;
   }
 
-  const auth = await verifyBearerSession(req.headers.authorization);
+  const auth = await verifyBearerSession(req.headers.authorization, req.headers['x-firebase-token']);
   if (!auth.ok) {
     const failed = auth as { ok: false; status: number; error: string };
     res.statusCode = failed.status;

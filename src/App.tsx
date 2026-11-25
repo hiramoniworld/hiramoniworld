@@ -21,7 +21,7 @@ import { UniverseHubPage } from './pages/UniverseHubPage';
 import { AdminPortalPage } from './pages/admin/AdminPortalPage';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { user, isAuthorized, loading } = useAuth();
 
   if (loading) {
     return (
@@ -31,7 +31,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
     );
   }
 
-  if (!user || !user.emailVerified) {
+  if (!user || !isAuthorized) {
     return <Navigate to="/login" replace />;
   }
 

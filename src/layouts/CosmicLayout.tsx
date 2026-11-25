@@ -8,11 +8,8 @@ import { StarfieldCanvas } from '../components/StarfieldCanvas';
 export const CosmicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const {
     user,
-    role,
     language,
     setLanguage,
-    reducedMotion,
-    setReducedMotion,
     signOut,
     siteSettings,
   } = useAuth();
@@ -130,50 +127,6 @@ export const CosmicLayout: React.FC<{ children: React.ReactNode }> = ({ children
           </div>
         ) : null}
       </header>
-
-      {/* Workspace Sub-Bar (Language, Reduced Motion, Privacy) */}
-      <div className="relative z-20 border-b border-slate-900/80 bg-[#060810]/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
-          <div className="flex items-center gap-3">
-            <span>{copy.privacyBadge}</span>
-            {user && role === 'admin' ? (
-              <>
-                <span aria-hidden="true">·</span>
-                <Link
-                  to="/admin"
-                  className="text-amber-200/90 hover:text-amber-100 underline underline-offset-4"
-                >
-                  {language === 'bn' ? 'অ্যাডমিন পোর্টাল' : 'Admin Portal'}
-                </Link>
-              </>
-            ) : null}
-          </div>
-          <div className="flex items-center gap-4">
-            <button
-              type="button"
-              onClick={() => setLanguage(language === 'bn' ? 'en' : 'bn')}
-              className="hover:text-amber-200 transition-colors whitespace-nowrap shrink-0"
-            >
-              {language === 'bn' ? 'Switch to English' : 'বাংলায় দেখুন'}
-            </button>
-            <span aria-hidden="true">·</span>
-            <button
-              type="button"
-              onClick={() => setReducedMotion(!reducedMotion)}
-              className="hover:text-amber-200 transition-colors whitespace-nowrap shrink-0"
-            >
-              {reducedMotion ? copy.reducedMotionOn : copy.reducedMotionOff}
-            </button>
-            <span aria-hidden="true">·</span>
-            <Link
-              to="/privacy"
-              className="hover:text-amber-200 transition-colors whitespace-nowrap shrink-0"
-            >
-              {copy.privacyNoteLink}
-            </Link>
-          </div>
-        </div>
-      </div>
 
       <main className="relative z-10 flex-1">{children}</main>
 

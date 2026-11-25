@@ -14,9 +14,19 @@ import { DEFAULT_SITE_SETTINGS, subscribeSiteSettings } from '../services/firest
 import type { Language, SiteSettings, UserRole } from '../types/hira';
 
 const BOOTSTRAP_ADMIN_EMAIL = 'hiramoniamar@gmail.com';
+const HIRA_ALLOWED_EMAIL = 'hiramoniworld@gmail.com';
+
+export function isAuthorizedUniverseUser(firebaseUser: User | null): boolean {
+  if (!firebaseUser) return false;
+  if (firebaseUser.emailVerified) return true;
+  const email = (firebaseUser.email || '').toLowerCase();
+  const hasPasswordProvider = firebaseUser.providerData.some((p) => p.providerId === 'password');
+  return email === HIRA_ALLOWED_EMAIL && hasPasswordProvider;
+}
 
 interface AuthContextValue {
   user: User | null;
+  isAuthorized: boolean;
   role: UserRole | null;
   loading: boolean;
   authError: string | null;
@@ -79,8 +89,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
+      const authorized = isAuthorizedUniverseUser(firebaseUser);
+
       try {
-        // Verify token server-side
         const token = await firebaseUser.getIdToken();
         let resolvedRole: UserRole | null = null;
 
@@ -88,7 +99,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const resp = await fetch('/api/verify-session', {
             method: 'POST',
             headers: {
-              Authorization: `Bearer ${token}`,
+              'X-Firebase-Token': token,
               'Content-Type': 'application/json',
             },
           });
@@ -99,28 +110,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
           } else if (resp.status === 403) {
             const errJson = (await resp.json().catch(() => ({}))) as { error?: string };
-            if (errJson.error && !firebaseUser.emailVerified) {
+            if (errJson.error && !authorized) {
               setAuthError(errJson.error);
             }
           }
         } catch {
-          // Fallback to Firestore role check when static hosting without /api
+          // Fallback to client check when running without Node /api
         }
 
-        if (!resolvedRole && firebaseUser.emailVerified) {
+        if (!resolvedRole && authorized) {
           const email = (firebaseUser.email || '').toLowerCase();
-          if (email === BOOTSTRAP_ADMIN_EMAIL) {
+          if (email === BOOTSTRAP_ADMIN_EMAIL && firebaseUser.emailVerified) {
             resolvedRole = 'admin';
           } else {
-            const adminSnap = await getDoc(doc(db, 'admins', firebaseUser.uid)).catch(() => null);
+            const adminSnap = firebaseUser.emailVerified
+              ? await getDoc(doc(db, 'admins', firebaseUser.uid)).catch(() => null)
+              : null;
             resolvedRole = adminSnap?.exists() ? 'admin' : 'hira';
           }
         }
 
         setRole(resolvedRole);
 
-        if (firebaseUser.emailVerified && resolvedRole) {
-          // Ensure user profile exists cleanly in Firestore
+        if (authorized && resolvedRole) {
           const userRef = doc(db, 'users', firebaseUser.uid);
           const userSnap = await getDoc(userRef).catch(() => null);
           if (userSnap && !userSnap.exists()) {
@@ -160,6 +172,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const raw = err instanceof Error ? err.message : 'Sign-in failed.';
       const msg = raw.includes('auth/operation-not-allowed')
         ? 'Email/Password login is not enabled in Firebase Console yet. Enable Email/Password under Authentication -> Sign-in method, and add your users under Authentication -> Users.'
+        : raw.includes('auth/invalid-credential') || raw.includes('auth/wrong-password')
+        ? 'Incorrect email or password. Please check and try again.'
         : raw;
       setAuthError(msg);
       throw err;
@@ -192,9 +206,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setRole(null);
   };
 
+  const isAuthorized = useMemo(() => isAuthorizedUniverseUser(user), [user]);
+
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
+      isAuthorized,
       role,
       loading,
       authError,
@@ -209,7 +226,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       signOut,
       clearAuthError: () => setAuthError(null),
     }),
-    [user, role, loading, authError, language, reducedMotion, siteSettings]
+    [user, isAuthorized, role, loading, authError, language, reducedMotion, siteSettings]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

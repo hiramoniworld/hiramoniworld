@@ -7,7 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import { UI_COPY } from '../utils/i18n';
 
 export const LandingPage: React.FC = () => {
-  const { user, language, siteSettings, reducedMotion } = useAuth();
+  const { user, isAuthorized, language, siteSettings, reducedMotion } = useAuth();
   const navigate = useNavigate();
   const copy = UI_COPY[language];
 
@@ -32,7 +32,7 @@ export const LandingPage: React.FC = () => {
       : siteSettings.secondaryPhrase || copy.secondaryPhrase;
 
   const handleEnter = () => {
-    if (user && user.emailVerified) {
+    if (user && isAuthorized) {
       navigate('/universe');
     } else {
       navigate('/login');
@@ -90,7 +90,7 @@ export const LandingPage: React.FC = () => {
               onClick={handleEnter}
               className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-lg bg-amber-300/95 text-slate-950 font-medium text-sm hover:bg-amber-200 transition-colors"
             >
-              <span>{user && user.emailVerified ? copy.enterUniverse : copy.beginExploring}</span>
+              <span>{user && isAuthorized ? copy.enterUniverse : copy.beginExploring}</span>
               <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </button>
           </div>

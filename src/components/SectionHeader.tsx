@@ -7,7 +7,7 @@ import { UI_COPY } from '../utils/i18n';
 interface SectionHeaderProps {
   kicker: string;
   title: string;
-  subtitle: string;
+  subtitle?: string;
   rightSlot?: React.ReactNode;
 }
 
@@ -39,9 +39,11 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
           <h1 className="font-editorial text-4xl md:text-5xl font-medium text-slate-50 leading-tight">
             {title}
           </h1>
-          <p className="text-sm md:text-base text-slate-300/90 leading-relaxed">
-            {subtitle}
-          </p>
+          {subtitle ? (
+            <p className="text-sm md:text-base text-slate-300/90 leading-relaxed">
+              {subtitle}
+            </p>
+          ) : null}
         </div>
         {rightSlot ? <div className="shrink-0">{rightSlot}</div> : null}
       </div>

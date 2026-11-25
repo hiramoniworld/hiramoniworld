@@ -2,11 +2,19 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     function isSignedIn() {
-      return request.auth != null && request.auth.token.email_verified == true;
+      return request.auth != null && (
+        request.auth.token.email_verified == true ||
+        (
+          request.auth.token.email == 'hiramoniworld@gmail.com' &&
+          request.auth.token.firebase.sign_in_provider == 'password'
+        )
+      );
     }
 
     function isAdmin() {
-      return isSignedIn() && request.auth.token.email == 'hiramoniamar@gmail.com';
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email == 'hiramoniamar@gmail.com';
     }
 
     // Public universe media uploaded by Admin (images, audio, video)

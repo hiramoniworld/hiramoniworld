@@ -58,16 +58,23 @@ export interface VerifiedSession {
 }
 
 export async function verifyBearerSession(
-  authorizationHeader?: string | string[]
+  authorizationHeader?: string | string[],
+  firebaseTokenHeader?: string | string[]
 ): Promise<{ ok: true; session: VerifiedSession } | { ok: false; status: number; error: string }> {
+  const customToken = Array.isArray(firebaseTokenHeader) ? firebaseTokenHeader[0] : firebaseTokenHeader;
   const header = Array.isArray(authorizationHeader) ? authorizationHeader[0] : authorizationHeader;
-  if (!header || !header.startsWith('Bearer ')) {
-    return { ok: false, status: 401, error: 'Missing Authorization Bearer token.' };
+
+  let token = '';
+  if (customToken && customToken.trim()) {
+    token = customToken.startsWith('Bearer ') ? customToken.slice('Bearer '.length).trim() : customToken.trim();
+  } else if (header && header.startsWith('Bearer ')) {
+    token = header.slice('Bearer '.length).trim();
+  } else {
+    return { ok: false, status: 401, error: 'Missing Authorization token.' };
   }
 
-  const token = header.slice('Bearer '.length).trim();
   if (!token || token.length > 8192) {
-    return { ok: false, status: 401, error: 'Malformed Bearer token.' };
+    return { ok: false, status: 401, error: 'Malformed authentication token.' };
   }
 
   const app = getAdminApp();
@@ -80,13 +87,10 @@ export async function verifyBearerSession(
     const email = (decoded.email || '').toLowerCase();
     const emailVerified = Boolean(decoded.email_verified);
 
-    if (!emailVerified) {
-      return { ok: false, status: 403, error: 'Email verification is required.' };
-    }
-
     const adminEmail = (process.env.ADMIN_EMAIL || 'hiramoniamar@gmail.com').toLowerCase();
     const adminUid = process.env.ADMIN_UID || '';
-    const isAdmin = (adminUid && decoded.uid === adminUid) || (adminEmail && email === adminEmail);
+    const isAdmin =
+      emailVerified && ((adminUid && decoded.uid === adminUid) || (adminEmail && email === adminEmail));
 
     if (isAdmin) {
       return {
@@ -101,8 +105,14 @@ export async function verifyBearerSession(
       };
     }
 
-    const hiraEmail = (process.env.HIRA_EMAIL || '').toLowerCase();
+    const hiraEmail = (process.env.HIRA_EMAIL || 'hiramoniworld@gmail.com').toLowerCase();
     const hiraUid = process.env.HIRA_UID || '';
+    const isPreAuthorizedHiraPassword =
+      email === hiraEmail && decoded.firebase?.sign_in_provider === 'password';
+
+    if (!emailVerified && !isPreAuthorizedHiraPassword) {
+      return { ok: false, status: 403, error: 'Email verification is required.' };
+    }
 
     if ((hiraEmail && email !== hiraEmail) || (hiraUid && decoded.uid !== hiraUid)) {
       return { ok: false, status: 403, error: 'This private universe is restricted to authorized accounts.' };

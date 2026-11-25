@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 export const LoginPage: React.FC = () => {
   const {
     user,
+    isAuthorized,
     language,
     authError,
     signInEmail,
@@ -20,10 +21,10 @@ export const LoginPage: React.FC = () => {
   const [verificationSent, setVerificationSent] = useState(false);
 
   useEffect(() => {
-    if (user && user.emailVerified) {
+    if (user && isAuthorized) {
       navigate('/universe', { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, isAuthorized, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,7 +61,7 @@ export const LoginPage: React.FC = () => {
           </p>
         </div>
 
-        {user && !user.emailVerified ? (
+        {user && !isAuthorized ? (
           <div className="border border-amber-400/30 bg-amber-400/10 rounded-lg p-4 space-y-3 text-sm text-amber-100">
             <div className="flex items-start gap-2.5">
               <MailCheck className="w-4 h-4 mt-0.5 shrink-0 text-amber-300" aria-hidden="true" />
